@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const validUrl = require("valid-url");
 const UrlShorten = mongoose.model("UrlShorten");
 const shortid = require("shortid");
-const errorUrl='http://localhost:27017/error';
+const errorUrl='http://localhost:7000/error';
 
   router.get("/:code", async (req, res) => {
     const urlCode = req.params.code;
@@ -18,15 +18,8 @@ const errorUrl='http://localhost:27017/error';
     }
   });
   router.post("/api/item", async (req, res) => {
-    const { originalUrl, shortBaseUrl } = req.body;
-    if (validUrl.isUri(shortBaseUrl)) {
-    } else {
-      return res
-        .status(401)
-        .json(
-          "Invalid Base Url"
-        );
-    }
+    const { originalUrl } = req.body;
+    const shortBaseUrl="http://localhost:7000";
     const urlCode = shortid.generate();
     const updatedAt = new Date();
     if (validUrl.isUri(originalUrl)) {
@@ -35,6 +28,7 @@ const errorUrl='http://localhost:27017/error';
         if (item) {
           res.status(200).json(item);
         } else {
+        
           shortUrl = shortBaseUrl + "/" + urlCode;
           const item = new UrlShorten({
             originalUrl,
